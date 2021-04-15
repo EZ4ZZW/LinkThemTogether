@@ -13,8 +13,8 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         return Grid(viewModel.cards) { card in
                 CardView(card: card).onTapGesture {
-                    self.viewModel.checkPair(card: card)
                     self.viewModel.choose(card: card)
+                    self.viewModel.checkPair(card: card)
                 }
                 .padding(5)
               }
@@ -39,6 +39,9 @@ struct CardView: View {
             if card.isFaceUp {
                 RoundedRectangle(cornerRadius: cornerRadius).fill(Color.white)
                 RoundedRectangle(cornerRadius: cornerRadius).stroke(lineWidth: edgeLineWidth)
+                if card.isChosing {
+                    Circle().padding(5)
+                }
                 Text(card.content)
             } else {
                 //RoundedRectangle(cornerRadius: cornerRadius).fill()

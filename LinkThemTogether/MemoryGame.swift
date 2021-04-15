@@ -22,10 +22,10 @@ struct MemoryGame<CardContent:Comparable> {
     
     mutating func choose(card: Card) {
         //card.ChangeFaceUp()
-        print("这是个没什么用的函数")
-//        if let chosenIndex = cards.firstIndex(matching: card) {
-//            self.cards[chosenIndex].isFaceUp = true
-//        }
+        if let chosenIndex = cards.firstIndex(matching: card) {
+            print("这是个没什么用的函数\(chosenIndex)")
+            self.cards[chosenIndex].isChosing = true
+        }
     }
     
     func isEquals<T: Comparable>(a: T, b: T) -> Bool {
@@ -53,8 +53,14 @@ struct MemoryGame<CardContent:Comparable> {
         return 0
     }
     
-    func checkNextPoint(cx: Int, cy: Int) -> Bool {
-        return cx <= 4 && cx >= 1 && cy <= 5 && cy >= 1 && !Vis[cx][cy] && isEquals(a: Graph[cx][cy], b: "❌" as! CardContent)
+    func checkNextPoint(cx: Int, cy: Int, desX: Int, desY: Int) -> Bool {
+        if cx <= 4 && cx >= 1 && cy <= 5 && cy >= 1 {
+            if isEquals(a: Graph[cx][cy], b: "❌" as! CardContent) ||  (cx == desX && cy == desY) {
+                return true
+                
+            }
+        }
+        return false
     }
     
     // Direction Tour
@@ -63,7 +69,7 @@ struct MemoryGame<CardContent:Comparable> {
     // 3 for up
     // 4 for down
     mutating func dfs(x: Int, y: Int, Direction: Int, DirChangeCnt: Int, desX: Int, desY: Int) {
-        if CanPair || DirChangeCnt > 2{
+        if CanPair || DirChangeCnt > 2 {
             return
         }
         print("Path to des (\(x),\(y))")
@@ -82,7 +88,7 @@ struct MemoryGame<CardContent:Comparable> {
         for i in 0..<4 {
             nextX = x + dx[i]
             nextY = y + dy[i]
-            if !checkNextPoint(cx: nextX, cy: nextY) && (nextX != desX || nextY != desY){
+            if !checkNextPoint(cx: nextX, cy: nextY, desX: desX, desY: desY) {
                 continue
             }
             nextDir = getDir(cx: dx[i], cy: dy[i])
@@ -91,12 +97,17 @@ struct MemoryGame<CardContent:Comparable> {
             if nextDir == Direction || Direction == 0 {
                 dfs(x: nextX, y: nextY, Direction: nextDir, DirChangeCnt: DirChangeCnt, desX: desX, desY: desY)
             } else {
-                dfs(x: nextX, y: nextY, Direction: nextDir
-                    , DirChangeCnt: DirChangeCnt+1, desX: desX, desY: desY)
+                dfs(x: nextX, y: nextY, Direction: nextDir, DirChangeCnt: DirChangeCnt+1, desX: desX, desY: desY)
             }
             Vis[nextX][nextY] = false
         }
         
+    }
+    
+    mutating func CancelChoosing(card: Card) {
+        if let chosenIndex = cards.firstIndex(matching: card) {
+            self.cards[chosenIndex].isChosing = false
+        }
     }
     
     mutating func checkPair(card: Card) {
@@ -132,6 +143,8 @@ struct MemoryGame<CardContent:Comparable> {
                     self.Graph[Int(self.cards[IdB].position.x)][Int(self.cards[IdB].position.y)] = "❌" as! CardContent
                 }
             }
+            CancelChoosing(card: card)
+            CancelChoosing(card: lastCard)
             lastCard.id = 25
         }
     }
@@ -234,6 +247,7 @@ struct MemoryGame<CardContent:Comparable> {
         var isMatched: Bool = false
         var content: CardContent
         
+        var isChosing: Bool = false
         var position: CGPoint
         
         mutating func ChangeFaceUp() {
