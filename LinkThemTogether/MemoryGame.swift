@@ -17,6 +17,9 @@ struct MemoryGame<CardContent:Comparable> {
     var Graph: Array<Array<CardContent>>
     var CanPair: Bool
     
+    var dx: Array<Int>
+    var dy: Array<Int>
+    
     mutating func choose(card: Card) {
         //card.ChangeFaceUp()
         print("这是个没什么用的函数")
@@ -37,35 +40,79 @@ struct MemoryGame<CardContent:Comparable> {
         }
     }
     
+    func getDir(cx: Int, cy: Int) -> Int {
+        if cx == 0 && cy == 1 {
+            return 4
+        } else if cx == 0 && cy == -1 {
+            return 3
+        } else if cx == 1 && cy == 0 {
+            return 2
+        } else if cx == -1 && cy == 0 {
+            return 1
+        }
+        return 0
+    }
+    
+    func checkNextPoint(cx: Int, cy: Int) -> Bool {
+        return cx <= 4 && cx >= 1 && cy <= 5 && cy >= 1 && !Vis[cx][cy] && isEquals(a: Graph[cx][cy], b: "❌" as! CardContent)
+    }
+    
     // Direction Tour
     // 1 for left
     // 2 for right
     // 3 for up
     // 4 for down
     mutating func dfs(x: Int, y: Int, Direction: Int, DirChangeCnt: Int, desX: Int, desY: Int) {
-        if CanPair || x < 1 || y < 1 || x > 4 || y > 5 || Direction > 2{
+        if CanPair || DirChangeCnt > 2{
             return
         }
+        print("Path to des (\(x),\(y))")
         if x == desX && y == desY {
             if DirChangeCnt <= 2 {
+                print("Got It 🐼")
                 CanPair = true
             }
             return
         }
         
-        dfs(x: x+1, y: <#T##Int#>, Direction: <#T##Int#>, DirChangeCnt: <#T##Int#>, desX: <#T##Int#>, desY: <#T##Int#>)
+        var nextX: Int
+        var nextY: Int
+        var nextDir: Int
+        
+        for i in 0..<4 {
+            nextX = x + dx[i]
+            nextY = y + dy[i]
+            if !checkNextPoint(cx: nextX, cy: nextY) && (nextX != desX || nextY != desY){
+                continue
+            }
+            nextDir = getDir(cx: dx[i], cy: dy[i])
+            Vis[nextX][nextY] = true
+    
+            if nextDir == Direction || Direction == 0 {
+                dfs(x: nextX, y: nextY, Direction: nextDir, DirChangeCnt: DirChangeCnt, desX: desX, desY: desY)
+            } else {
+                dfs(x: nextX, y: nextY, Direction: nextDir
+                    , DirChangeCnt: DirChangeCnt+1, desX: desX, desY: desY)
+            }
+            Vis[nextX][nextY] = false
+        }
+        
     }
     
     mutating func checkPair(card: Card) {
-        print("card chosen: \(lastCard)")
-        if lastCard.id == 25 {
+        print("card chosen: \(card)")
+        if lastCard.id == 25 || lastCard.id == card.id{
             lastCard = card
+            print("last card  : \(card)")
+            return
         } else {
             if isEquals(a: card.content, b: lastCard.content) {
-                
+                self.CanPair = false
+                InitVisArray()
                 var IdA: Int
                 var IdB: Int
-                
+                IdB = 0
+                IdA = 0
                 if let chosenIndex = cards.firstIndex(matching: card) {
                     IdA = chosenIndex
                     //self.cards[chosenIndex].isFaceUp = false
@@ -74,9 +121,16 @@ struct MemoryGame<CardContent:Comparable> {
                     IdB = chosenIndex
                     //self.cards[chosenIndex].isFaceUp = false
                 }
+                Vis[Int(self.cards[IdA].position.x)][Int(self.cards[IdB].position.y)] = true
+                dfs(x: Int(self.cards[IdA].position.x), y: Int(self.cards[IdA].position.y), Direction: 0, DirChangeCnt: 0, desX: Int(self.cards[IdB].position.x), desY: Int(self.cards[IdB].position.y))
                 
-                
-                
+                if CanPair {
+                    self.cards[IdA].isFaceUp = false
+                    self.cards[IdB].isFaceUp = false
+                    self.Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)] = "❌" as! CardContent
+                    print( Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)])
+                    self.Graph[Int(self.cards[IdB].position.x)][Int(self.cards[IdB].position.y)] = "❌" as! CardContent
+                }
             }
             lastCard.id = 25
         }
@@ -86,6 +140,19 @@ struct MemoryGame<CardContent:Comparable> {
         cards = Array<Card>()
         
         CanPair = false
+        
+        // INIT: dx and dy array
+        dx = Array<Int>()
+        dy = Array<Int>()
+        dx.append(0)
+        dx.append(1)
+        dx.append(0)
+        dx.append(-1)
+        
+        dy.append(1)
+        dy.append(0)
+        dy.append(-1)
+        dy.append(0)
         
         // INIT: Vis Array
         Vis = Array<Array<Bool>>()
