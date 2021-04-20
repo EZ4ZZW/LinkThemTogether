@@ -9,18 +9,26 @@ import SwiftUI
 
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
-    
     var body: some View {
-        return Grid(viewModel.cards) { card in
-                CardView(card: card).onTapGesture {
-                    self.viewModel.choose(card: card)
-                    self.viewModel.checkPair(card: card)
+        VStack {
+            Grid(viewModel.cards) { card in
+                    CardView(card: card).onTapGesture {
+                        self.viewModel.choose(card: card)
+                        self.viewModel.checkPair(card: card)
+                    }
+                    .padding(5)
+                  }
+                    .padding()
+                    .foregroundColor(Color.orange)
+            
+            Text("重新开始游戏")
+                .font(.system(size: 30))
+                .onTapGesture {
+                    self.viewModel.resetGame()
+                    print("test")
                 }
-                .padding(5)
-              }
-                .padding()
-                .foregroundColor(Color.orange)
-
+                
+        }
             
     }
 }

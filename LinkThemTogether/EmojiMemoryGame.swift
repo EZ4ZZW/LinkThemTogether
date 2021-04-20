@@ -31,4 +31,9 @@ class EmojiMemoryGame: ObservableObject {
     func checkPair(card: MemoryGame<String>.Card) {
         model.checkPair(card: card)
     }
+    
+    func resetGame() {
+        self.model = EmojiMemoryGame.createMemoryGame()
+    }
+    
 }
