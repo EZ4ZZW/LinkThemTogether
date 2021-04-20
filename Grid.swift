@@ -30,10 +30,6 @@ struct Grid<Item, ItemView>: View where Item: Identifiable, ItemView: View {
     }
     
     func body(for item: Item, in layout: GridLayout) -> some View {
-        // TODO: build for something
-        //        for i in 0..<20 {
-//            print(layout.location(ofItemAt: i))
-//        }
         let index = items.firstIndex(matching: item)!
         return viewForItem(item)
             .frame(width: layout.itemSize.width, height: layout.itemSize.height)
