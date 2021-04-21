@@ -12,14 +12,29 @@ class EmojiMemoryGame: ObservableObject {
     @Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame(Theme: 0)
     
     static func createMemoryGame(Theme: Int) -> MemoryGame<String> {
-        let emojisAnimal: Array<String> = ["🐶","🐼","🦁","🐱","🐷","🐸","🐰","🐒","🐲","👽"]
+        let emojisAnimal:  Array<String> = ["🐶", "🐼", "🦁", "🐱", "🐷", "🐸", "🐰", "🦊", "🐲", "🐮"]
         let emojisFelling: Array<String> = ["😄", "😭", "😅", "😢", "😠", "😈", "🥳", "😫", "🥰" ,"😤"]
+        let emojisFamily:  Array<String> = ["👴", "👵", "👨", "👩", "👦", "👧", "🙋‍♂️", "🎅", "👼", "👶"]
+        let emojisFruit :  Array<String> = ["🍎", "🍋", "🍌", "🥥", "🥝", "🍓", "🍑", "🍉", "🍈", "🫐"]
+
         var emojis: Array<String>
         emojis = emojisAnimal
-        if Theme == 0 {
+        switch Theme {
+        case 0:
             emojis = emojisAnimal
-        } else {
+            break
+        case 1:
             emojis = emojisFelling
+            break
+        case 2:
+            emojis = emojisFamily
+            break
+        case 3:
+            emojis = emojisFruit
+            break
+        default:
+            break
+        //emojis = emojisFelling
         }
         return MemoryGame<String>.init(numberOfParisOfCards: emojis.count) { pairIndex in
             return emojis[pairIndex]
@@ -41,7 +56,7 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func resetGame() {
-        var themeID = arc4random()%2
+        let themeID = arc4random()%4
         self.model = EmojiMemoryGame.createMemoryGame(Theme: Int(themeID))
     }
  
