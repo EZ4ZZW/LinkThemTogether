@@ -44,5 +44,9 @@ class EmojiMemoryGame: ObservableObject {
         var themeID = arc4random()%2
         self.model = EmojiMemoryGame.createMemoryGame(Theme: Int(themeID))
     }
+ 
+    func getScore() -> Int {
+        return model.Score
+    }
     
 }

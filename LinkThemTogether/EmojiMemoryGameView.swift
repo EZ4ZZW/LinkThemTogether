@@ -21,12 +21,20 @@ struct EmojiMemoryGameView: View {
                     .padding()
                     .foregroundColor(Color.orange)
             
-            Text("重新开始游戏")
-                .font(.system(size: 30))
-                .onTapGesture {
-                    self.viewModel.resetGame()
-                    print("test")
-                }
+            HStack {
+                
+                Text("分数：\(self.viewModel.getScore())")
+                    .font(.system(size: 30))
+                
+                Spacer()
+                
+                Text("重新开始游戏")
+                    .font(.system(size: 30))
+                    .onTapGesture {
+                        self.viewModel.resetGame()
+                        print("test")
+                    }
+            }
                 
         }
             

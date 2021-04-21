@@ -12,7 +12,7 @@ struct MemoryGame<CardContent:Comparable> {
     var cards: Array<Card>
     
     var lastCard: Card
-    
+    var Score: Int
     var Vis: Array<Array<Bool>>
     var Graph: Array<Array<CardContent>>
     var CanPair: Bool
@@ -136,12 +136,15 @@ struct MemoryGame<CardContent:Comparable> {
                 dfs(x: Int(self.cards[IdA].position.x), y: Int(self.cards[IdA].position.y), Direction: 0, DirChangeCnt: 0, desX: Int(self.cards[IdB].position.x), desY: Int(self.cards[IdB].position.y))
                 
                 if CanPair {
+                    Score += 8
                     self.cards[IdA].isFaceUp = false
                     self.cards[IdB].isFaceUp = false
                     self.Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)] = "❌" as! CardContent
                     print( Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)])
                     self.Graph[Int(self.cards[IdB].position.x)][Int(self.cards[IdB].position.y)] = "❌" as! CardContent
                 }
+            } else {
+                Score -= 2
             }
             CancelChoosing(card: card)
             CancelChoosing(card: lastCard)
@@ -153,7 +156,7 @@ struct MemoryGame<CardContent:Comparable> {
         cards = Array<Card>()
         
         CanPair = false
-        
+        Score = 0
         // INIT: dx and dy array
         dx = Array<Int>()
         dy = Array<Int>()
