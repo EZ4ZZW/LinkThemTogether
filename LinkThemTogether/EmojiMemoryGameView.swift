@@ -9,8 +9,14 @@ import SwiftUI
 
 struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
+    @State private var Theme: String = "Animal"
     var body: some View {
         VStack {
+            if self.viewModel.getRemaingCardCount() == 0 {
+                Text("恭喜🎉你赢辣 你好🐮🐸")
+                    .font(.system(size: 80))
+                    .position(x: 400, y: 600)
+            }
             Grid(viewModel.cards) { card in
                     CardView(card: card).onTapGesture {
                         self.viewModel.choose(card: card)
@@ -26,13 +32,17 @@ struct EmojiMemoryGameView: View {
                 Text("分数：\(self.viewModel.getScore())")
                     .font(.system(size: 30))
                 
-                Spacer()
+                Spacer(minLength: 2)
+                
+                Text("Timer: \(self.viewModel.getGameTime())")
+                    .font(.system(size: 30))
+                
+                Spacer(minLength: 2)
                 
                 Text("重新开始游戏")
                     .font(.system(size: 30))
                     .onTapGesture {
                         self.viewModel.resetGame()
-                        print("test")
                     }
             }
                 
