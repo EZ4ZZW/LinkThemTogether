@@ -64,4 +64,14 @@ class EmojiMemoryGame: ObservableObject {
         return model.Score
     }
     
+    func getRemaingCardCount() -> Int {
+        return model.CardCount
+    }
+    
+    func getGameTime() -> Int {
+        var NowTime: TimeInterval
+        NowTime = Date().timeIntervalSince1970
+        return Int(NowTime)-model.SecCount
+    }
+    
 }

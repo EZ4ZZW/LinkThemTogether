@@ -13,10 +13,11 @@ struct MemoryGame<CardContent:Comparable> {
     
     var lastCard: Card
     var Score: Int
+    var CardCount: Int
     var Vis: Array<Array<Bool>>
     var Graph: Array<Array<CardContent>>
     var CanPair: Bool
-    
+    var SecCount: Int
     var dx: Array<Int>
     var dy: Array<Int>
     
@@ -142,6 +143,7 @@ struct MemoryGame<CardContent:Comparable> {
                     self.Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)] = "❌" as! CardContent
                     print( Graph[Int(self.cards[IdA].position.x)][Int(self.cards[IdA].position.y)])
                     self.Graph[Int(self.cards[IdB].position.x)][Int(self.cards[IdB].position.y)] = "❌" as! CardContent
+                    CardCount -= 2
                 }
             } else {
                 Score -= 2
@@ -235,6 +237,10 @@ struct MemoryGame<CardContent:Comparable> {
             }
         }
         
+        CardCount = cards.count
+        var temp: TimeInterval
+        temp = Date().timeIntervalSince1970
+        SecCount = Int(temp)
         for i in 0..<20 {
             print(cards[i].position)
         }
